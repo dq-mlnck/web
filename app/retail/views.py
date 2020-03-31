@@ -1007,6 +1007,26 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'Town Square',
+            'heading': _("A Web3-enabled social networking bazaar."),
+            'description': _("Gitcoin offers social features that uses mechanism design create a community that #GivesFirst."),
+            'link': 'https://gitcoin.co/townsquare',
+            'img': static('v2/images/products/social.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of posts per day',
+        },
+        {
+            'name': 'Chat',
+            'heading': _("Reach your favorite Gitcoiner's in realtime.."),
+            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
+            'link': 'https://gitcoin.co/chat/landing',
+            'img': static('v2/images/products/chat.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of DAUs',
+        },
+        {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
@@ -1153,6 +1173,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     relevant_grants = []
     if what == 'tribes':
         relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    elif what == 'all_grants':
+        activities = activities.filter(grant__isnull=False)
     elif what == 'grants':
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
@@ -1301,7 +1323,11 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
-        
+
+        if request.POST.get('has_video'):
+            kwargs['metadata']['video'] = True
+            kwargs['metadata']['gfx'] = request.POST.get('video_gfx')
+
         if request.POST.get('option1'):
             poll_choices = []
             for i in range(1, 5):
@@ -1345,6 +1371,11 @@ def create_status_update(request):
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
     return JsonResponse(response)
+
+
+def grant_redir(request):
+    return redirect('/grants/')
+
 
 def help(request):
     return redirect('/wiki/')
