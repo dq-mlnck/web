@@ -302,13 +302,24 @@ body {
   align-items: center;
 }
 
+.navigation .nav-link, .navigation .nav-link:hover {
+  color: inherit;
+  border:0;
+}
+
+.navigation .nav-link.active{
+  background-color: transparent !important;
+  border:0;
+}
+
 .navigation a {
-  font-weight: 500;
-  padding: 0;
+  width:100% !important;
+  font-weight: 500 !important;
+  padding: 0 !important;
 }
 
 .navigation a.active {
-  font-weight: bold;
-  color: #0b0d9d;
-  border-bottom: 4px solid #0b0d9d;
+  font-weight: bold !important;
+  color: #0b0d9d !important;
+  border-bottom: 4px solid #0b0d9d !important;
 }
